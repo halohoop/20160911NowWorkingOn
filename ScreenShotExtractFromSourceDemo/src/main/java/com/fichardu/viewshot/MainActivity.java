@@ -28,6 +28,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
+                //6.0增加了运行时权限，需要动态检测以下是否可用，用户手动允许的时候才可用；
                 if(!Settings.canDrawOverlays(MainActivity.this)) {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                     startActivity(intent);
