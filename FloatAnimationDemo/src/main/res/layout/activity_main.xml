@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:BounceProgressBar="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tplink.halohoop.floatanimationdemo.MainActivity">
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:src="@mipmap/ic_launcher"/>
+
+
+    <com.halohoop.bounceprogressbar.views.BounceProgressBar
+        android:id="@+id/bpb"
+        android:layout_width="100dp"
+        android:background="@android:color/white"
+        android:layout_height="100dp"
+        BounceProgressBar:BouncingBallColor="#0f0"
+        BounceProgressBar:FixBallColor="#f00"
+        BounceProgressBar:LineColor="#8e8e8e"/>
+
+</RelativeLayout>
