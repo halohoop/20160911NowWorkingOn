@@ -175,7 +175,7 @@ class GlobalScreenshot {
         startAnimation(finisher, mDisplayMetrics.widthPixels, mDisplayMetrics.heightPixels,
                 statusBarVisible, navBarVisible);
 
-        mScreenBitmap.compress()
+//        mScreenBitmap.compress();
     }
 
 
