@@ -3,7 +3,7 @@
     android:color="?android:attr/colorControlHighlight" >
 
     <item android:id="@android:id/mask">
-        <shape android:shape="oval" >
+        <shapeType android:shapeType="oval">
             <solid android:color="@android:color/white" />
 
             <padding
@@ -11,7 +11,7 @@
                 android:left="10dp"
                 android:right="10dp"
                 android:top="10dp" />
-        </shape>
+        </shapeType>
     </item>
 
 </ripple>
