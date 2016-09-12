@@ -127,6 +127,7 @@ public class DrawActivity extends Activity implements OnTouchListener, OnClickLi
                 upX = event.getX();
                 upY = event.getY();
                 canvas.drawLine(downX, downY, upX, upY, paint);
+                canvas.drawCircle(100, 100, 50, paint);
                 imageView.invalidate();
                 downX = upX;
                 downY = upY;

@@ -18,9 +18,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.PointF;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -81,9 +80,10 @@ public class MarkableImageView extends PhotoView {
     public MarkableImageView(Context context, AttributeSet attr, int defStyle) {
         super(context, attr, defStyle);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setTextSize(100.0f);
+//        mPaint.setTextSize(100.0f);
         mPaint.setColor(Color.BLACK);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
         mStartPointF = new PointF();
         mEndPointF = new PointF();
@@ -165,6 +165,7 @@ public class MarkableImageView extends PhotoView {
                 updateCirclePointFsAndRadius();
                 break;
             case RECTANGLE:
+                updateRectanglePointFs();
                 break;
         }
     }
@@ -176,6 +177,13 @@ public class MarkableImageView extends PhotoView {
         circlePointFs[1].y = mEndPointF.y;
         float radius = (float) Math.sqrt(mDisX * mDisX + mDisY * mDisY);
         shape.setRadius(radius);
+    }
+
+    private void updateRectanglePointFs() {
+        Shape shape = shapes.get(shapes.size() - 1);
+        PointF[] rectanglePointFs = shape.getPoints();
+        rectanglePointFs[1].x = rectanglePointFs[0].x - Math.abs(mDisX);
+        rectanglePointFs[1].y = rectanglePointFs[0].y - Math.abs(mDisY);
     }
 
     private void initShapeType() {
@@ -196,6 +204,11 @@ public class MarkableImageView extends PhotoView {
                 circlePoints[0].y = mStartPointF.y;
                 break;
             case RECTANGLE:
+                Shape rectangle = new Shape(Shape.ShapeType.CIRCLE);
+                shape = rectangle;
+                PointF[] rectanglePoints = rectangle.getPoints();
+                rectanglePoints[0].x = mStartPointF.x;
+                rectanglePoints[0].y = mStartPointF.y;
                 break;
         }
         shapes.add(shape);
@@ -209,10 +222,10 @@ public class MarkableImageView extends PhotoView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //draw picture
         super.onDraw(canvas);
-//        if (mIsEditing) {
+        //draw our lovely shapes
         drawShape(canvas);
-//        }
     }
 
     private void drawShape(Canvas canvas) {
@@ -223,14 +236,12 @@ public class MarkableImageView extends PhotoView {
                 case ARROW:
                     //draw arrow
                     //draw triangle
-                    canvas.save();
                     Path triangle = new Path();
                     triangle.moveTo(pointFs[0].x, pointFs[0].y);
                     triangle.lineTo(pointFs[2].x, pointFs[2].y);
                     triangle.lineTo(pointFs[3].x, pointFs[3].y);
                     triangle.close();
                     canvas.drawPath(triangle, mPaint);
-                    canvas.restore();
 
                     canvas.drawLine(pointFs[4].x, pointFs[4].y, pointFs[1].x,
                             pointFs[1].y, mPaint);
@@ -252,10 +263,8 @@ public class MarkableImageView extends PhotoView {
                     break;
                 case CIRCLE:
                     float radius = shape.getRadius();
-                    canvas.save();
                     mPaint.setStyle(Paint.Style.STROKE);
                     canvas.drawCircle(pointFs[0].x, pointFs[0].y, radius, mPaint);
-                    canvas.restore();
                     mPaint.setStyle(Paint.Style.FILL);
                     break;
                 case RECTANGLE:
@@ -272,14 +281,12 @@ public class MarkableImageView extends PhotoView {
                 case ARROW:
                     //draw arrow
                     //draw triangle
-                    canvas.save();
                     Path triangle = new Path();
                     triangle.moveTo(pointFs[0].x, pointFs[0].y);
                     triangle.lineTo(pointFs[2].x, pointFs[2].y);
                     triangle.lineTo(pointFs[3].x, pointFs[3].y);
                     triangle.close();
                     canvas.drawPath(triangle, mPaint);
-                    canvas.restore();
 
                     canvas.drawLine(pointFs[4].x, pointFs[4].y, pointFs[1].x,
                             pointFs[1].y, mPaint);
@@ -308,7 +315,7 @@ public class MarkableImageView extends PhotoView {
                 case RECTANGLE:
                     break;
             }
-        }
+        }//for end
     }
 
     public void updateTrianglePointFs() {
@@ -390,10 +397,12 @@ public class MarkableImageView extends PhotoView {
     }
 
     public void saveImageToFile(ImageView mIv) {
-        Drawable drawable = getDrawable();
-        Bitmap bitmap = drawableToBitamp(drawable);
+        BitmapDrawable drawable = (BitmapDrawable) getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
 
-        Bitmap finalBitmap = createFinalBitmap(bitmap);
+        Bitmap finalBitmap = bitmap.copy(bitmap.getConfig(), true);
+        Canvas canvas = new Canvas(finalBitmap);
+        drawShape2(canvas);
 
         mIv.setImageBitmap(finalBitmap);
 
@@ -403,39 +412,6 @@ public class MarkableImageView extends PhotoView {
             Log.e("huanghaiqi", "huanghaiqi 保存文件失败!");
             e.printStackTrace();
         }
-    }
-
-    private Bitmap createFinalBitmap(Bitmap bitmap) {
-        Bitmap finalBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap
-                .getConfig() == Bitmap
-                .Config.ARGB_8888 ? Bitmap
-                .Config.ARGB_8888 : Bitmap
-                .Config.RGB_565);
-        Canvas canvas = new Canvas(finalBitmap);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        drawShape2(canvas);
-        //save all clip
-        canvas.save(Canvas.ALL_SAVE_FLAG);
-        //保存store
-        canvas.restore();//存储
-
-        return finalBitmap;
-    }
-
-    private Bitmap drawableToBitamp(Drawable drawable) {
-        Bitmap bitmap = null;
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-        Log.i("huanghaiqi", "Drawable转Bitmap");
-        Bitmap.Config config =
-                drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                        : Bitmap.Config.RGB_565;
-        bitmap = Bitmap.createBitmap(w, h, config);
-        //注意，下面三行代码要用到，否在在View或者surfaceview里的canvas.drawBitmap会看不到图
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, w, h);
-        drawable.draw(canvas);
-        return bitmap;
     }
 
     /**
