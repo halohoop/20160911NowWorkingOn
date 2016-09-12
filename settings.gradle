@@ -1,1 +1,1 @@
-include ':ReflectionDemo', ':ScreenShotExtractFromSourceDemo', ':FloatAnimationDemo', ':MarkableImageView-lib', ':MarkableImageView-Sample', ':MergeBitmap'
+include ':ReflectionDemo', ':ScreenShotExtractFromSourceDemo', ':FloatAnimationDemo', ':MarkableImageView-lib', ':MarkableImageView-Sample', ':mergebitmap'

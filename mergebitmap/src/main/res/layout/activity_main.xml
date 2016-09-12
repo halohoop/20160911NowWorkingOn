@@ -7,8 +7,9 @@
     tools:context="com.halohoop.mergebitmap.MainActivity">
 
     <ImageView
+        android:contentDescription="custom imageview maybe"
         android:id="@+id/iv"
-        android:scaleType="centerInside"
+        android:scaleType="fitXY"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ImageView>
 </RelativeLayout>
