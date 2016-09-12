@@ -51,6 +51,14 @@
                 android:layout_weight="1"
                 android:onClick="addCircle"
                 android:text="添加圆"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addRectangle"
+                android:text="添加方"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -76,9 +84,10 @@
 
     <com.halohoop.markableimageview.views.MarkableImageView
         android:id="@+id/miv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/ll_btn_edit_group"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/pic"/>
 
 </RelativeLayout>

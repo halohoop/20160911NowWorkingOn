@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
         mMiv.setNowAddingShapeType(Shape.ShapeType.CIRCLE);
     }
 
+    public void addRectangle(View v) {
+        Log.i(TAG, "addRectangle");
+        mMiv.setNowAddingShapeType(Shape.ShapeType.RECTANGLE);
+    }
+
     public void saveFile(View v) {
         Log.i(TAG, "saveFile");
         mMiv.saveImageToFile(mIv);
