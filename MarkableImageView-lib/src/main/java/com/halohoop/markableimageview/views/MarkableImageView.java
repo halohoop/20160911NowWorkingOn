@@ -58,6 +58,7 @@ public class MarkableImageView extends PhotoView {
     private double mAngle;
     private float heightOfArrow = 40.0f;
     private float widthOfArrow = 10.0f;
+    private float radiusCornor = 5.0f;
 
     /**
      * 标识当前正在添加哪一种类型的图形（箭头，圆，方）
@@ -182,8 +183,43 @@ public class MarkableImageView extends PhotoView {
     private void updateRectanglePointFs() {
         Shape shape = shapes.get(shapes.size() - 1);
         PointF[] rectanglePointFs = shape.getPoints();
-        rectanglePointFs[1].x = rectanglePointFs[0].x - Math.abs(mDisX);
-        rectanglePointFs[1].y = rectanglePointFs[0].y - Math.abs(mDisY);
+        //----------------------
+        //left top to right bottom
+        if (mStartPointF.x <= mEndPointF.x && mStartPointF.y <= mEndPointF.y) {
+            rectanglePointFs[1].x = rectanglePointFs[0].x;
+            rectanglePointFs[1].y = rectanglePointFs[0].y + Math.abs(mDisY);
+            rectanglePointFs[2].x = mEndPointF.x;
+            rectanglePointFs[2].y = mEndPointF.y;
+            rectanglePointFs[3].x = mEndPointF.x;
+            rectanglePointFs[3].y = mEndPointF.y - Math.abs(mDisY);
+        }
+        //right bottom to left top
+        else if (mStartPointF.x >= mEndPointF.x && mStartPointF.y >= mEndPointF.y) {
+            rectanglePointFs[1].x = rectanglePointFs[0].x;
+            rectanglePointFs[1].y = rectanglePointFs[0].y - Math.abs(mDisY);
+            rectanglePointFs[2].x = mEndPointF.x;
+            rectanglePointFs[2].y = mEndPointF.y;
+            rectanglePointFs[3].x = mEndPointF.x;
+            rectanglePointFs[3].y = mEndPointF.y + Math.abs(mDisY);
+        }
+        //left bottom to right top
+        else if (mStartPointF.x < mEndPointF.x && mStartPointF.y > mEndPointF.y) {
+            rectanglePointFs[1].x = rectanglePointFs[0].x;
+            rectanglePointFs[1].y = rectanglePointFs[0].y - Math.abs(mDisY);
+            rectanglePointFs[2].x = mEndPointF.x;
+            rectanglePointFs[2].y = mEndPointF.y;
+            rectanglePointFs[3].x = mEndPointF.x;
+            rectanglePointFs[3].y = mEndPointF.y + Math.abs(mDisY);
+        }
+        //right top to left bottom
+        else {
+            rectanglePointFs[1].x = rectanglePointFs[0].x;
+            rectanglePointFs[1].y = rectanglePointFs[0].y + Math.abs(mDisY);
+            rectanglePointFs[2].x = mEndPointF.x;
+            rectanglePointFs[2].y = mEndPointF.y;
+            rectanglePointFs[3].x = mEndPointF.x;
+            rectanglePointFs[3].y = mEndPointF.y - Math.abs(mDisY);
+        }
     }
 
     private void initShapeType() {
@@ -204,7 +240,7 @@ public class MarkableImageView extends PhotoView {
                 circlePoints[0].y = mStartPointF.y;
                 break;
             case RECTANGLE:
-                Shape rectangle = new Shape(Shape.ShapeType.CIRCLE);
+                Shape rectangle = new Shape(Shape.ShapeType.RECTANGLE);
                 shape = rectangle;
                 PointF[] rectanglePoints = rectangle.getPoints();
                 rectanglePoints[0].x = mStartPointF.x;
@@ -268,54 +304,18 @@ public class MarkableImageView extends PhotoView {
                     mPaint.setStyle(Paint.Style.FILL);
                     break;
                 case RECTANGLE:
+                    mPaint.setStyle(Paint.Style.STROKE);
+                    float minLeftTopX = Math.min(pointFs[0].x, pointFs[2].x);
+                    float minLeftTopY = Math.min(pointFs[0].y, pointFs[2].y);
+                    float maxRightBottomX = Math.max(pointFs[0].x, pointFs[2].x);
+                    float maxRightBottomY = Math.max(pointFs[0].y, pointFs[2].y);
+                    canvas.drawRoundRect(minLeftTopX, minLeftTopY,
+                            maxRightBottomX, maxRightBottomY,
+                            radiusCornor, radiusCornor * 2, mPaint);
+                    mPaint.setStyle(Paint.Style.FILL);
                     break;
             }
         }
-    }
-
-    private void drawShape2(Canvas canvas) {
-        for (int i = 0; i < shapes.size(); i++) {
-            Shape shape = shapes.get(i);
-            PointF[] pointFs = shape.getPoints();
-            switch (shape.getShapeType()) {
-                case ARROW:
-                    //draw arrow
-                    //draw triangle
-                    Path triangle = new Path();
-                    triangle.moveTo(pointFs[0].x, pointFs[0].y);
-                    triangle.lineTo(pointFs[2].x, pointFs[2].y);
-                    triangle.lineTo(pointFs[3].x, pointFs[3].y);
-                    triangle.close();
-                    canvas.drawPath(triangle, mPaint);
-
-                    canvas.drawLine(pointFs[4].x, pointFs[4].y, pointFs[1].x,
-                            pointFs[1].y, mPaint);
-
-                    //just for debug
-                    if (mIsNeedDebug) {
-                        mPaint.setColor(Color.RED);
-                        canvas.drawCircle(pointFs[0].x, pointFs[0].y, 5, mPaint);
-                        mPaint.setColor(Color.YELLOW);
-                        canvas.drawCircle(pointFs[1].x, pointFs[1].y, 5, mPaint);
-                        mPaint.setColor(Color.GREEN);
-                        canvas.drawCircle(pointFs[2].x, pointFs[2].y, 5, mPaint);
-                        mPaint.setColor(Color.BLUE);
-                        canvas.drawCircle(pointFs[3].x, pointFs[3].y, 5, mPaint);
-                        mPaint.setColor(Color.BLACK);
-                    }
-                    //just for debug
-                    //draw arrow
-                    break;
-                case CIRCLE:
-                    float radius = shape.getRadius();
-                    mPaint.setStyle(Paint.Style.STROKE);
-                    canvas.drawCircle(pointFs[0].x, pointFs[0].y, radius, mPaint);
-                    mPaint.setStyle(Paint.Style.FILL);
-                    break;
-                case RECTANGLE:
-                    break;
-            }
-        }//for end
     }
 
     public void updateTrianglePointFs() {
@@ -384,8 +384,6 @@ public class MarkableImageView extends PhotoView {
             trianglePointFs[3].y = (float) (trianglePointFs[1].y - cW);
             trianglePointFs[3].x = (float) (trianglePointFs[1].x - sW);
         }
-
-
     }
 
     public void enterEditMode() {
@@ -400,9 +398,11 @@ public class MarkableImageView extends PhotoView {
         BitmapDrawable drawable = (BitmapDrawable) getDrawable();
         Bitmap bitmap = drawable.getBitmap();
 
-        Bitmap finalBitmap = bitmap.copy(bitmap.getConfig(), true);
+
+//        Bitmap finalBitmap = bitmap.copy(bitmap.getConfig(), true);
+        Bitmap finalBitmap = Bitmap.createBitmap(bitmap, 0, 0, this.getWidth(), this.getHeight());
         Canvas canvas = new Canvas(finalBitmap);
-        drawShape2(canvas);
+        drawShape(canvas);
 
         mIv.setImageBitmap(finalBitmap);
 
@@ -411,6 +411,10 @@ public class MarkableImageView extends PhotoView {
         } catch (IOException e) {
             Log.e("huanghaiqi", "huanghaiqi 保存文件失败!");
             e.printStackTrace();
+        } finally {
+//            if (finalBitmap != null && !finalBitmap.isRecycled()) {
+//                finalBitmap.recycle();
+//            }
         }
     }
 
