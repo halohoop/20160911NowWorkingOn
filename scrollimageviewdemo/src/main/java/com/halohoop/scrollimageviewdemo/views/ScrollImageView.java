@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import static android.R.attr.offset;
-
 /**
  * Created by Pooholah on 2016/9/13.
  */
