@@ -70,6 +70,7 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
      * 传感器获取到的水平值
      */
     private float mLevelAngle;
+    private float mNorthOffsetAngle;
 
 
     public CompassGradienterView(Context context) {
@@ -174,17 +175,27 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
         mCompassWordsRadius = mCompassRadius - mMiddlePadding;
     }
 
+    public void setNorthOffsetAngle(float northOffsetAngle) {
+        this.mNorthOffsetAngle = northOffsetAngle;
+        postInvalidate();
+    }
+
+    public void setLevelAngle(float levelAngle) {
+        this.mLevelAngle = levelAngle;
+        postInvalidate();
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        float northOffsetAngle = 340;//模拟从传感器获取的值
-        mLevelAngle = 30;//模拟从传感器获取的值
+        //模拟从传感器获取的值
+//        mNorthOffsetAngle = 30;
+//        mLevelAngle = 30;//模拟从传感器获取的值
 
         //画表盘
         canvas.save();
-        canvas.rotate(northOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
+        canvas.rotate(mNorthOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
         canvas.drawBitmap(mIndexDialBitmap,
                 mMiddlePoint.x - mIndexDialBitmap.getWidth() / 2,
                 mMiddlePoint.y - mIndexDialBitmap.getHeight() / 2, null);
@@ -194,7 +205,7 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
         for (int i = 0; i < mWordsOnIndexDial.length; i++) {
             mPaint.getTextBounds(mWordsOnIndexDial[i], 0, mWordsOnIndexDial[i].length(),
                     mEveryWordRect);
-            float wordAngle = northOffsetAngle + mEveryWordAngle * i;
+            float wordAngle = mNorthOffsetAngle + mEveryWordAngle * i;
             updatePlateWordsPaint(i);
             LogUtils.i("i:" + i + " wordAngle:" + wordAngle);
             if (wordAngle >= 0 && wordAngle < 90) {
@@ -241,7 +252,7 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
 
         canvas.save();
         //画中间的填充白色半圆
-        canvas.rotate(northOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
+        canvas.rotate(mNorthOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
         updateMiddleCircleHalfFillPaint();
         canvas.drawArc(
                 mMiddleCircleLeft, mMiddleCircleTop,
@@ -266,7 +277,7 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
 
         //画跟随表盘的红色的三角形
         canvas.save();
-        canvas.rotate(northOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
+        canvas.rotate(mNorthOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
         mTriangleWithPlatePath.reset();
         //move to top
         float triangleTopY = mMiddlePoint.y - mCompassRadius - mTriangleWithPlateMargin -
