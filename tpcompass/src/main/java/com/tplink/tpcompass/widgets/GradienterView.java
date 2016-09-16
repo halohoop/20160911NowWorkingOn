@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -33,7 +34,11 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
      * 两边突出的两条横线的长度
      */
     private static final float FIX_LINE_LENGTH = 35.0f;
-
+    /**
+     * 中间度数文字的字体大小
+     */
+    private static final float MIDDLE_TEXT_SIZE = 100;
+    
     private float mMiddleCircleLeft;
     private float mMiddleCircleTop;
     private float mMiddleCircleRight;
@@ -44,6 +49,7 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
     private float mBlackEndAngle = 360;
     private float mRotateAngle;
     private int mMiddleGradienterOvalColor;
+    private int mTextDegree;
 
     public GradienterView(Context context) {
         this(context, null);
@@ -102,11 +108,11 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawLine(
                 mMiddlePoint.x - mGradientRadius - FIX_LINE_LENGTH,
                 mMiddlePoint.y,
-                mMiddlePoint.x - mGradientRadius,
+                mMiddlePoint.x - mGradientRadius - 4,
                 mMiddlePoint.y,
                 mPaint);
         canvas.drawLine(
-                mMiddlePoint.x + mGradientRadius,
+                mMiddlePoint.x + mGradientRadius + 4,
                 mMiddlePoint.y,
                 mMiddlePoint.x + mGradientRadius + FIX_LINE_LENGTH,
                 mMiddlePoint.y,
@@ -118,31 +124,41 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
                 mMiddleCircleRight, mMiddleCircleBottom,
                 mPaint);
 
-        //simulate data
+//        //simulate data
         mWhiteStartAngle = 0;
         mWhiteEndAngle = 180;
         mBlackStartAngle = 180;
         mBlackEndAngle = 360;
-        mRotateAngle = 30;
-        //simulate data
+        mRotateAngle = 45;//超过45就不画了，why?
+        //超过45就不画了，why?
+        mTextDegree = 45;
+//        //simulate data
         canvas.save();
-        //画中间的填充白色半圆
+//        //画中间的填充白色半圆
         canvas.rotate(mRotateAngle, mMiddlePoint.x, mMiddlePoint.y);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.WHITE);
         canvas.drawArc(
-                mMiddleCircleLeft, mMiddleCircleTop,
-                mMiddleCircleRight, mMiddleCircleBottom,
+                mMiddleCircleLeft + 2.5f, mMiddleCircleTop + 2.5f,
+                mMiddleCircleRight - 2.5f, mMiddleCircleBottom - 2.5f,
                 mWhiteStartAngle, mWhiteEndAngle, false,
                 mPaint);
         //画中间的水平仪椭圆
         float middleOvalHeight = (float) (Math.cos(mRotateAngle) * mGradientRadius);
         mPaint.setColor(mMiddleGradienterOvalColor);
         canvas.drawOval(
-                mMiddleCircleLeft, mMiddlePoint.y - middleOvalHeight,
-                mMiddleCircleRight, mMiddlePoint.y + middleOvalHeight, mPaint);
+                mMiddleCircleLeft + 2.5f, mMiddlePoint.y - middleOvalHeight,
+                mMiddleCircleRight - 2.5f, mMiddlePoint.y + middleOvalHeight, mPaint);
+        //draw middle text
+        mPaint.setColor(Color.WHITE);
+        Rect textBounds = new Rect();
+        mPaint.setTextSize(MIDDLE_TEXT_SIZE);
+        String textDegree = mTextDegree + "°";
+        mPaint.getTextBounds(textDegree, 0, (textDegree).length(), textBounds);
+        int halfTextWidth = textBounds.width() / 2;
+        int halfTextHeight = textBounds.height() / 2;
+        canvas.drawText(textDegree, mMiddlePoint.x - halfTextWidth, mMiddlePoint.y + halfTextHeight, mPaint);
         canvas.restore();
-
     }
 
     @Override
