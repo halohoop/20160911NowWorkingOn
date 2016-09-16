@@ -1,10 +1,8 @@
 package com.tplink.tpcompass.views.fragments;
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -36,37 +34,27 @@ public class CompassGradienterFragment extends Fragment
     private TextView mTvNorthLatitude;
     private TextView mTvEastLongitude;
 
-    private SensorManager mSensorManager;
     //presenter
     private ISersorPresenter mISersorPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-
-        mISersorPresenter = new ISersorPresenterImpls(mSensorManager, this);
-
+        mISersorPresenter = new ISersorPresenterImpls(getContext(), this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         LogUtils.i("CompassGradienterFragment onResume");
-        //Sensor.TYPE_ORIENTATION 在新版本中已经放弃
-        Sensor magsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        Sensor accsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-        mSensorManager.registerListener(this, magsensor, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, accsensor, SensorManager.SENSOR_DELAY_UI);
+        mISersorPresenter.registerSensor(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LogUtils.i("CompassGradienterFragment onPause");
-        mSensorManager.unregisterListener(this);
+        mISersorPresenter.unregisterSensor(this);
     }
 
 
@@ -128,7 +116,7 @@ public class CompassGradienterFragment extends Fragment
     }
 
     @Override
-    public void onRotatePlate(double azimuth) {
-        mCvCompass.setNorthOffsetAngle(360 - (float) azimuth);
+    public void onRotatePlate(float azimuth) {
+        mCvCompass.setNorthOffsetAngle(360 - azimuth);
     }
 }

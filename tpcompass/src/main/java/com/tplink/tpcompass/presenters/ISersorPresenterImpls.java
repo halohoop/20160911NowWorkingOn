@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import com.tplink.tpcompass.R;
+import com.tplink.tpcompass.utils.CalculateUtils;
 import com.tplink.tpcompass.views.ICompassFragment;
 
 /**
@@ -19,15 +21,21 @@ public class ISersorPresenterImpls implements ISersorPresenter {
     private float[] mAccs;
     private float[] mOris;
     private float[] mRotate;
+    private Context mContext;
     private SensorManager mSensorManager;
     private ICompassFragment mICompassFragment;
+    private float mAzimuth;
+    private float mLastAzimuth;
+    private Sensor mMagsensor;
+    private Sensor mAccsensor;
 
-    public ISersorPresenterImpls(SensorManager sensorManager, ICompassFragment iCompassFragment) {
+    public ISersorPresenterImpls(Context context, ICompassFragment iCompassFragment) {
         mMags = new float[3];
         mAccs = new float[3];
         mOris = new float[3];
         mRotate = new float[9];
-        this.mSensorManager = sensorManager;
+        this.mContext = context;
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.mICompassFragment = iCompassFragment;
     }
 
@@ -44,13 +52,14 @@ public class ISersorPresenterImpls implements ISersorPresenter {
         mSensorManager.getRotationMatrix(mRotate, null, mAccs, mMags);
         mSensorManager.getOrientation(mRotate, mOris);
 
-        /*oris[0]      :azimuth 方向角，但用（磁场+加速度）得到的数据范围是（-180～180）,也就是说，0表示正北，90表示正东，180/-180表示正南，-90表示正西。
+        /*oris[0]      :mAzimuth 方向角，但用（磁场+加速度）得到的数据范围是（-180～180）,也就是说，0表示正北，90表示正东，180/-180表示正南，-90表示正西。
         oris[1]      :pitch 倾斜角  即由静止状态开始，围绕X轴前后翻转
         oris[2]      :roll 旋转角 即由静止状态开始，围绕Y轴左右翻转*/
-        double azimuth = Math.toDegrees(mOris[0]);
-        if (azimuth < 0) {
-            azimuth = azimuth + 360;
+        mAzimuth = (float) Math.toDegrees(mOris[0]);
+        if (mAzimuth < 0) {
+            mAzimuth = mAzimuth + 360;
         }
+        mAzimuth = CalculateUtils.lowPass(mAzimuth, mLastAzimuth);
         //
         double pitch = Math.toDegrees(mOris[1]);
         double roll = Math.toDegrees(mOris[2]);
@@ -58,25 +67,44 @@ public class ISersorPresenterImpls implements ISersorPresenter {
         String directionText = "";
         Context context = mICompassFragment.getContext();
         Resources resources = context.getResources();
-        if (azimuth >= 0 && azimuth <= 22 ||
-                azimuth >= 338 && azimuth <= 359) {
+        if (mAzimuth >= 0 && mAzimuth <= 22 ||
+                mAzimuth >= 338 && mAzimuth <= 359) {
             directionText = resources.getString(R.string.north);
-        } else if (azimuth >= 23 && azimuth <= 67) {
+        } else if (mAzimuth >= 23 && mAzimuth <= 67) {
             directionText = resources.getString(R.string.northeast);
-        } else if (azimuth >= 68 && azimuth <= 112) {
+        } else if (mAzimuth >= 68 && mAzimuth <= 112) {
             directionText = resources.getString(R.string.east);
-        } else if (azimuth >= 113 && azimuth <= 157) {
+        } else if (mAzimuth >= 113 && mAzimuth <= 157) {
             directionText = resources.getString(R.string.southeast);
-        } else if (azimuth >= 158 && azimuth <= 202) {
+        } else if (mAzimuth >= 158 && mAzimuth <= 202) {
             directionText = resources.getString(R.string.south);
-        } else if (azimuth >= 203 && azimuth <= 247) {
+        } else if (mAzimuth >= 203 && mAzimuth <= 247) {
             directionText = resources.getString(R.string.southwest);
-        } else if (azimuth >= 248 && azimuth <= 292) {
+        } else if (mAzimuth >= 248 && mAzimuth <= 292) {
             directionText = resources.getString(R.string.west);
         } else {
             directionText = resources.getString(R.string.northwest);
         }
-        mICompassFragment.onUpdateDirectionText(directionText + ((int) azimuth) + "°");
-        mICompassFragment.onRotatePlate(azimuth);
+        mICompassFragment.onUpdateDirectionText(directionText + (Math.round(mAzimuth)) + "°");
+        mICompassFragment.onRotatePlate(mAzimuth);
+
+        mLastAzimuth = mAzimuth;
     }
+
+    @Override
+    public void registerSensor(SensorEventListener sensorEventListener) {
+        //Sensor.TYPE_ORIENTATION 在新版本中已经放弃
+        mMagsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        mAccsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        mSensorManager.registerListener(sensorEventListener, mMagsensor, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(sensorEventListener, mAccsensor, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    public void unregisterSensor(SensorEventListener sensorEventListener) {
+        mSensorManager.unregisterListener(sensorEventListener, mMagsensor);
+        mSensorManager.unregisterListener(sensorEventListener, mAccsensor);
+    }
+
 }

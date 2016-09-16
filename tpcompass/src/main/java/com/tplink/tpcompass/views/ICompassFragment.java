@@ -7,8 +7,9 @@ import android.content.Context;
  */
 
 public interface ICompassFragment {
-    void onUpdateDirectionText(String directionText);
     Context getContext();
 
-    void onRotatePlate(double azimuth);
+    void onUpdateDirectionText(String directionText);
+
+    void onRotatePlate(float azimuth);
 }
