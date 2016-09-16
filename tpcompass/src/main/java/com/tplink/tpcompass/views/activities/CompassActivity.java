@@ -11,13 +11,14 @@ import com.tplink.tpcompass.adapters.CompassAdapter;
 import com.tplink.tpcompass.listeners.CompassOnPageChangeListener;
 import com.tplink.tpcompass.utils.LogUtils;
 import com.tplink.tpcompass.views.ICompassActivity;
-import com.tplink.tpcompass.views.fragments.CompassFragment;
+import com.tplink.tpcompass.views.fragments.CompassGradienterFragment;
 import com.tplink.tpcompass.views.fragments.GradienterFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompassActivity extends AppCompatActivity implements ICompassActivity {
+public class CompassActivity extends AppCompatActivity
+        implements ICompassActivity {
 
     private SurfaceView mSfvCompass;
     private ViewPager mVpMain;
@@ -30,15 +31,17 @@ public class CompassActivity extends AppCompatActivity implements ICompassActivi
         mSfvCompass = (SurfaceView) findViewById(R.id.sfv_compass);
         mVpMain = (ViewPager) findViewById(R.id.vp_main);
 
-        CompassFragment compassFragment = new CompassFragment();
+        CompassGradienterFragment compassGradienterFragment = new CompassGradienterFragment();
         GradienterFragment gradienterFragment = new GradienterFragment();
 
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(compassFragment);
+        fragments.add(compassGradienterFragment);
         fragments.add(gradienterFragment);
 
         mVpMain.setAdapter(new CompassAdapter(getSupportFragmentManager(), fragments));
         mVpMain.addOnPageChangeListener(new CompassOnPageChangeListener(this));
+
+
     }
 
     @Override
@@ -60,4 +63,5 @@ public class CompassActivity extends AppCompatActivity implements ICompassActivi
     public void onOpenCameraScence() {
 
     }
+
 }

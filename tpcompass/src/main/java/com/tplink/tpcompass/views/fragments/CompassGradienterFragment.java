@@ -1,5 +1,10 @@
 package com.tplink.tpcompass.views.fragments;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,13 +15,19 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.tplink.tpcompass.R;
+import com.tplink.tpcompass.presenters.ISersorPresenter;
+import com.tplink.tpcompass.presenters.ISersorPresenterImpls;
+import com.tplink.tpcompass.utils.LogUtils;
+import com.tplink.tpcompass.views.ICompassFragment;
 import com.tplink.tpcompass.widgets.CompassGradienterView;
 
 /**
  * Created by Pooholah on 2016/9/15.
  */
 
-public class CompassFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class CompassGradienterFragment extends Fragment
+        implements SeekBar.OnSeekBarChangeListener,
+        SensorEventListener, ICompassFragment {
 
     private CompassGradienterView mCvCompass;
     private TextView mTvDirectionCompass;
@@ -25,10 +36,44 @@ public class CompassFragment extends Fragment implements SeekBar.OnSeekBarChange
     private TextView mTvNorthLatitude;
     private TextView mTvEastLongitude;
 
+    private SensorManager mSensorManager;
+    //presenter
+    private ISersorPresenter mISersorPresenter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+
+        mISersorPresenter = new ISersorPresenterImpls(mSensorManager, this);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LogUtils.i("CompassGradienterFragment onResume");
+        //Sensor.TYPE_ORIENTATION 在新版本中已经放弃
+        Sensor magsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        Sensor accsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        mSensorManager.registerListener(this, magsensor, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, accsensor, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LogUtils.i("CompassGradienterFragment onPause");
+        mSensorManager.unregisterListener(this);
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-    Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compass, null, false);
         mCvCompass = (CompassGradienterView) view.findViewById(R.id.cv_compass);
         mTvDirectionCompass = (TextView) view.findViewById(R.id.tv_direction_compass);
@@ -65,5 +110,25 @@ public class CompassFragment extends Fragment implements SeekBar.OnSeekBarChange
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        mISersorPresenter.handleSensorEvent(event);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    public void onUpdateDirectionText(String directionText) {
+        mTvDirectionCompass.setText(directionText);
+    }
+
+    @Override
+    public void onRotatePlate(double azimuth) {
+        mCvCompass.setNorthOffsetAngle(360 - (float) azimuth);
     }
 }

@@ -46,8 +46,6 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
     private float mMiddleCircleBottom;
     private float mWhiteStartAngle = 0;
     private float mWhiteEndAngle = 180;
-    private float mBlackStartAngle = 180;
-    private float mBlackEndAngle = 360;
     private float mRotateAngle;
     private int mMiddleGradienterOvalColor;
     private int mTextDegree;
@@ -134,8 +132,6 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
 //        //simulate data
         mWhiteStartAngle = 0;
         mWhiteEndAngle = 180;
-        mBlackStartAngle = 180;
-        mBlackEndAngle = 360;
         mRotateAngle = 45;//超过45就不画了，why?
         //超过45就不画了，why?
         mTextDegree = 6;
