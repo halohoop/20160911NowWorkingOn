@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tplink.tpcompass.R;
-import com.tplink.tpcompass.widgets.CompassView;
+import com.tplink.tpcompass.widgets.CompassGradienterView;
 
 /**
  * Created by Pooholah on 2016/9/15.
@@ -17,7 +17,7 @@ import com.tplink.tpcompass.widgets.CompassView;
 
 public class CompassFragment extends Fragment {
 
-    private CompassView mCvCompass;
+    private CompassGradienterView mCvCompass;
     private TextView mTvDirectionCompass;
     private TextView mTvPointNorthLeftCompass;
     private TextView mTvPointNorthRightCompass;
@@ -28,7 +28,7 @@ public class CompassFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compass, null, false);
-        mCvCompass = (CompassView) view.findViewById(R.id.cv_compass);
+        mCvCompass = (CompassGradienterView) view.findViewById(R.id.cv_compass);
         mTvDirectionCompass = (TextView) view.findViewById(R.id.tv_direction_compass);
         mTvPointNorthLeftCompass = (TextView) view.findViewById(R.id.tv_point_north_left_compass);
         mTvPointNorthRightCompass = (TextView) view.findViewById(R.id.tv_point_north_right_compass);
@@ -36,4 +36,5 @@ public class CompassFragment extends Fragment {
         mTvEastLongitude = (TextView) view.findViewById(R.id.tv_east_longitude);
         return view;
     }
+
 }

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tplink.tpcompass.widgets.CompassView
+    <com.tplink.tpcompass.widgets.CompassGradienterView
         android:id="@+id/cv_compass"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

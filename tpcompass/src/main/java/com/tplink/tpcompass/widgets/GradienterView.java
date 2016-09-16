@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -38,7 +39,7 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
      * 中间度数文字的字体大小
      */
     private static final float MIDDLE_TEXT_SIZE = 100;
-    
+
     private float mMiddleCircleLeft;
     private float mMiddleCircleTop;
     private float mMiddleCircleRight;
@@ -50,6 +51,8 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
     private float mRotateAngle;
     private int mMiddleGradienterOvalColor;
     private int mTextDegree;
+    private Typeface mCustomDegreeFont;
+    private Typeface mNormalTypeface;
 
     public GradienterView(Context context) {
         this(context, null);
@@ -71,6 +74,10 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
         mPaint.setColor(Color.RED);
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
         mMiddleGradienterOvalColor = Color.parseColor("#FF282828");
+
+        mCustomDegreeFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Thin" +
+                ".ttf");
+        mNormalTypeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
     }
 
     private void initAttrs(AttributeSet attrs) {
@@ -131,7 +138,7 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
         mBlackEndAngle = 360;
         mRotateAngle = 45;//超过45就不画了，why?
         //超过45就不画了，why?
-        mTextDegree = 45;
+        mTextDegree = 6;
 //        //simulate data
         canvas.save();
 //        //画中间的填充白色半圆
@@ -151,14 +158,17 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
                 mMiddleCircleRight - 2.5f, mMiddlePoint.y + middleOvalHeight, mPaint);
         //draw middle text
         mPaint.setColor(Color.WHITE);
+        mPaint.setTypeface(mCustomDegreeFont);
         Rect textBounds = new Rect();
         mPaint.setTextSize(MIDDLE_TEXT_SIZE);
         String textDegree = mTextDegree + "°";
         mPaint.getTextBounds(textDegree, 0, (textDegree).length(), textBounds);
         int halfTextWidth = textBounds.width() / 2;
         int halfTextHeight = textBounds.height() / 2;
-        canvas.drawText(textDegree, mMiddlePoint.x - halfTextWidth, mMiddlePoint.y + halfTextHeight, mPaint);
+        canvas.drawText(textDegree, mMiddlePoint.x - halfTextWidth, mMiddlePoint.y +
+                halfTextHeight, mPaint);
         canvas.restore();
+        mPaint.setTypeface(mNormalTypeface);
     }
 
     @Override
