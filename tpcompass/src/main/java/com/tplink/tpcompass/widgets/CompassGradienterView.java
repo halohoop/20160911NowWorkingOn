@@ -102,7 +102,7 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
     private void init(Context context, AttributeSet attrs) {
         getHolder().addCallback(this);
         initPaint();
-        mMiddleGradienterOvalColor = Color.parseColor("#FF282828");
+        mMiddleGradienterOvalColor = Color.parseColor("#FF181818");
 
         /**
          * 表盘有12个词，得到画布每次需要旋转的角度

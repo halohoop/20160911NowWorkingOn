@@ -80,10 +80,19 @@ public class ISersorPresenterImpls implements ISersorPresenter {
 
         mICompassFragment.onUpdateGradienter(mPitch, mRoll);
 
+        mICompassFragment.onRotatePlate(mAzimuth);
+
+        if (mAzimuth < 50) {
+            mICompassFragment.onHideCameraScence();
+        } else if (mAzimuth >= 50) {
+            mICompassFragment.onOpenCameraScence();
+        }
+
         mLastAzimuth = mAzimuth;
         mLastPitch = mPitch;
         mLastRoll = mRoll;
     }
+
 
     @NonNull
     private String getDirectionText() {

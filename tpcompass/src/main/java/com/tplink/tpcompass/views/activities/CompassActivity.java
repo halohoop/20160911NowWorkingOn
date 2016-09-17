@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.adapters.CompassAdapter;
@@ -22,6 +23,7 @@ public class CompassActivity extends AppCompatActivity
 
     private SurfaceView mSfvCompass;
     private ViewPager mVpMain;
+    private boolean mShowSurfaceView = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +57,22 @@ public class CompassActivity extends AppCompatActivity
 
     @Override
     public void onHideCameraScence() {
-
+        if (mShowSurfaceView) {
+            LogUtils.i(" huanghaiqi onHideCameraScence");
+            mShowSurfaceView = false;
+            //TODO replace with animation to hide
+            mSfvCompass.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onOpenCameraScence() {
-
+        if (!mShowSurfaceView) {
+            LogUtils.i("huanghaiqi onOpenCameraScence");
+            mShowSurfaceView = true;
+            //TODO replace with animation to show
+            mSfvCompass.setVisibility(View.VISIBLE);
+        }
     }
 
 }

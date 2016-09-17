@@ -1,5 +1,6 @@
 package com.tplink.tpcompass.views.fragments;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.presenters.ISersorPresenter;
 import com.tplink.tpcompass.presenters.ISersorPresenterImpls;
+import com.tplink.tpcompass.views.ICompassActivity;
 import com.tplink.tpcompass.views.ICompassFragment;
 import com.tplink.tpcompass.widgets.CompassGradienterView;
 
@@ -33,6 +35,8 @@ public class CompassGradienterFragment extends Fragment
     private TextView mTvNorthLatitude;
     private TextView mTvEastLongitude;
 
+    private ICompassActivity mICompassActivity;
+
     //presenter
     private ISersorPresenter mISersorPresenter;
 
@@ -40,6 +44,12 @@ public class CompassGradienterFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mISersorPresenter = new ISersorPresenterImpls(getContext(), this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mICompassActivity = (ICompassActivity) getActivity();
     }
 
     @Override
@@ -58,7 +68,7 @@ public class CompassGradienterFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-    Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compass, null, false);
         mCvCompass = (CompassGradienterView) view.findViewById(R.id.cv_compass);
         mTvDirectionCompass = (TextView) view.findViewById(R.id.tv_direction_compass);
@@ -68,9 +78,7 @@ public class CompassGradienterFragment extends Fragment
         mTvEastLongitude = (TextView) view.findViewById(R.id.tv_east_longitude);
         //test
         SeekBar svRotation = (SeekBar) view.findViewById(R.id.sb_rotation);
-        SeekBar svLevel = (SeekBar) view.findViewById(R.id.sb_level);
         svRotation.setOnSeekBarChangeListener(this);
-        svLevel.setOnSeekBarChangeListener(this);
         //test
         return view;
     }
@@ -80,9 +88,6 @@ public class CompassGradienterFragment extends Fragment
         switch (seekBar.getId()) {
             case R.id.sb_rotation:
                 mCvCompass.setNorthOffsetAngle(progress);
-                break;
-            case R.id.sb_level:
-                mCvCompass.setLevelAngle(progress);
                 break;
         }
     }
@@ -120,5 +125,24 @@ public class CompassGradienterFragment extends Fragment
     @Override
     public void onUpdateGradienter(float pitch, float roll) {
         mCvCompass.setGradienterData(pitch, roll);
+    }
+
+    @Override
+    public void onHideCameraScence() {
+        mTvPointNorthLeftCompass.setVisibility(View.INVISIBLE);
+        mTvPointNorthRightCompass.setVisibility(View.INVISIBLE);
+
+        //for Surfaceview in activity
+        if (mICompassActivity != null) {
+            mICompassActivity.onHideCameraScence();
+        }
+    }
+
+    @Override
+    public void onOpenCameraScence() {
+        //for Surfaceview in activity
+        if (mICompassActivity != null) {
+            mICompassActivity.onOpenCameraScence();
+        }
     }
 }

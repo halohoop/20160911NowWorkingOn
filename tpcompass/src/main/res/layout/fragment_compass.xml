@@ -23,20 +23,6 @@
 
 
     <TextView
-        android:id="@+id/tv_point_north_left_compass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="33dp"
-        android:drawableLeft="@mipmap/triangle_left"
-        android:gravity="left"
-        android:text="北"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"/>
-
-    <TextView
         android:id="@+id/tv_point_north_right_compass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -101,14 +87,21 @@
             android:max="359"
             android:layout_marginBottom="20dp"
             android:progress="30"/>
-
-        <SeekBar
-            android:id="@+id/sb_level"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="90"
-            android:progress="30"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_point_north_left_compass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:drawableLeft="@mipmap/triangle_left"
+        android:gravity="left"
+        android:text="北"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_alignBaseline="@+id/tv_point_north_right_compass"
+        android:layout_alignBottom="@+id/tv_point_north_right_compass"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>
