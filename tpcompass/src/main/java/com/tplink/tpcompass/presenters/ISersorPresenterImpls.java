@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.annotation.NonNull;
 
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.utils.CalculateUtils;
@@ -24,10 +25,14 @@ public class ISersorPresenterImpls implements ISersorPresenter {
     private Context mContext;
     private SensorManager mSensorManager;
     private ICompassFragment mICompassFragment;
-    private float mAzimuth;
-    private float mLastAzimuth;
     private Sensor mMagsensor;
     private Sensor mAccsensor;
+    private float mAzimuth;
+    private float mLastAzimuth;
+    private float mPitch;
+    private float mLastPitch;
+    private float mRoll;
+    private float mLastRoll;
 
     public ISersorPresenterImpls(Context context, ICompassFragment iCompassFragment) {
         mMags = new float[3];
@@ -52,19 +57,37 @@ public class ISersorPresenterImpls implements ISersorPresenter {
         mSensorManager.getRotationMatrix(mRotate, null, mAccs, mMags);
         mSensorManager.getOrientation(mRotate, mOris);
 
-        /*oris[0]      :mAzimuth 方向角，但用（磁场+加速度）得到的数据范围是（-180～180）,也就是说，0表示正北，90表示正东，180/-180表示正南，-90表示正西。
-        oris[1]      :pitch 倾斜角  即由静止状态开始，围绕X轴前后翻转
-        oris[2]      :roll 旋转角 即由静止状态开始，围绕Y轴左右翻转*/
+        /*
+            oris[0]      :mAzimuth 方向角，但用（磁场+加速度）得到的数据范围是（-180～180）,
+                也就是说，0表示正北，90表示正东，180/-180表示正南，-90表示正西。
+            oris[1]      :pitch 倾斜角  即由静止状态开始，围绕X轴前后翻转
+            oris[2]      :roll 旋转角 即由静止状态开始，围绕Y轴左右翻转
+        */
         mAzimuth = (float) Math.toDegrees(mOris[0]);
+        mPitch = (float) Math.toDegrees(mOris[1]);
+        mRoll = (float) Math.toDegrees(mOris[2]);
         if (mAzimuth < 0) {
-            mAzimuth = mAzimuth + 360;
+            mAzimuth = 360 + mAzimuth;
         }
         mAzimuth = CalculateUtils.lowPass(mAzimuth, mLastAzimuth);
-        //
-        double pitch = Math.toDegrees(mOris[1]);
-        double roll = Math.toDegrees(mOris[2]);
+        mPitch = CalculateUtils.lowPass(mPitch, mLastPitch);
+        mRoll = CalculateUtils.lowPass(mRoll, mLastRoll);
 
-        String directionText = "";
+        String directionText = getDirectionText();
+        mICompassFragment.onUpdateDirectionText(directionText + (Math.round(mAzimuth)) + "°");
+
+        mICompassFragment.onRotatePlate(mAzimuth);
+
+        mICompassFragment.onUpdateGradienter(mPitch, mRoll);
+
+        mLastAzimuth = mAzimuth;
+        mLastPitch = mPitch;
+        mLastRoll = mRoll;
+    }
+
+    @NonNull
+    private String getDirectionText() {
+        String directionText;
         Context context = mICompassFragment.getContext();
         Resources resources = context.getResources();
         if (mAzimuth >= 0 && mAzimuth <= 22 ||
@@ -85,10 +108,7 @@ public class ISersorPresenterImpls implements ISersorPresenter {
         } else {
             directionText = resources.getString(R.string.northwest);
         }
-        mICompassFragment.onUpdateDirectionText(directionText + (Math.round(mAzimuth)) + "°");
-        mICompassFragment.onRotatePlate(mAzimuth);
-
-        mLastAzimuth = mAzimuth;
+        return directionText;
     }
 
     @Override
@@ -97,8 +117,14 @@ public class ISersorPresenterImpls implements ISersorPresenter {
         mMagsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         mAccsensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        mSensorManager.registerListener(sensorEventListener, mMagsensor, SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(sensorEventListener, mAccsensor, SensorManager.SENSOR_DELAY_GAME);
+//        mSensorManager.registerListener(sensorEventListener, mMagsensor, SensorManager
+//                .SENSOR_DELAY_GAME);
+//        mSensorManager.registerListener(sensorEventListener, mAccsensor, SensorManager
+//                .SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(sensorEventListener, mMagsensor, SensorManager
+                .SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(sensorEventListener, mAccsensor, SensorManager
+                .SENSOR_DELAY_FASTEST);
     }
 
     @Override

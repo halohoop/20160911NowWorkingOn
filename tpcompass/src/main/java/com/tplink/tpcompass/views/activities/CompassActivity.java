@@ -41,7 +41,6 @@ public class CompassActivity extends AppCompatActivity
         mVpMain.setAdapter(new CompassAdapter(getSupportFragmentManager(), fragments));
         mVpMain.addOnPageChangeListener(new CompassOnPageChangeListener(this));
 
-
     }
 
     @Override

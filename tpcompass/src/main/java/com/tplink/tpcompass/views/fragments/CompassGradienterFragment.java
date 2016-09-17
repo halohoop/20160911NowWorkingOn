@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.presenters.ISersorPresenter;
 import com.tplink.tpcompass.presenters.ISersorPresenterImpls;
-import com.tplink.tpcompass.utils.LogUtils;
 import com.tplink.tpcompass.views.ICompassFragment;
 import com.tplink.tpcompass.widgets.CompassGradienterView;
 
@@ -46,14 +45,12 @@ public class CompassGradienterFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        LogUtils.i("CompassGradienterFragment onResume");
         mISersorPresenter.registerSensor(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LogUtils.i("CompassGradienterFragment onPause");
         mISersorPresenter.unregisterSensor(this);
     }
 
@@ -61,7 +58,7 @@ public class CompassGradienterFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-            Bundle savedInstanceState) {
+    Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compass, null, false);
         mCvCompass = (CompassGradienterView) view.findViewById(R.id.cv_compass);
         mTvDirectionCompass = (TextView) view.findViewById(R.id.tv_direction_compass);
@@ -118,5 +115,10 @@ public class CompassGradienterFragment extends Fragment
     @Override
     public void onRotatePlate(float azimuth) {
         mCvCompass.setNorthOffsetAngle(360 - azimuth);
+    }
+
+    @Override
+    public void onUpdateGradienter(float pitch, float roll) {
+        mCvCompass.setGradienterData(pitch, roll);
     }
 }

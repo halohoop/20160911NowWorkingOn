@@ -14,7 +14,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.tplink.tpcompass.R;
-import com.tplink.tpcompass.utils.LogUtils;
+import com.tplink.tpcompass.utils.CalculateUtils;
 
 /**
  * Created by Pooholah on 2016/9/15.
@@ -70,7 +70,19 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
      * 传感器获取到的水平值
      */
     private float mLevelAngle;
+    /**
+     * 表盘旋转的角度
+     */
     private float mNorthOffsetAngle;
+    /**
+     * 水平与X轴的角度
+     */
+    private float mPitch;
+    /**
+     * 水平与Y轴的角度
+     */
+    private float mRoll;
+    private float[] mGradienterRotateAngleAndValue;
 
 
     public CompassGradienterView(Context context) {
@@ -106,6 +118,8 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
         mTriangleWithPlateMargin = 30;
         mTriangleWithPlateHeight = 25;
         mTriangleWithPlateHalfWidth = 20;
+
+        mGradienterRotateAngleAndValue = new float[2];
     }
 
     /**
@@ -193,6 +207,11 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
 //        mNorthOffsetAngle = 30;
 //        mLevelAngle = 30;//模拟从传感器获取的值
 
+        CalculateUtils.getGradienterRotateAngleAndValue(mPitch, mRoll,
+                mGradienterRotateAngleAndValue);
+
+        mLevelAngle = mGradienterRotateAngleAndValue[1];
+
         //画表盘
         canvas.save();
         canvas.rotate(mNorthOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
@@ -207,7 +226,6 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
                     mEveryWordRect);
             float wordAngle = mNorthOffsetAngle + mEveryWordAngle * i;
             updatePlateWordsPaint(i);
-            LogUtils.i("i:" + i + " wordAngle:" + wordAngle);
             if (wordAngle >= 0 && wordAngle < 90) {
                 //第1象限
                 float tmpAngle = 90 - wordAngle;
@@ -252,7 +270,7 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
 
         canvas.save();
         //画中间的填充白色半圆
-        canvas.rotate(mNorthOffsetAngle, mMiddlePoint.x, mMiddlePoint.y);
+        canvas.rotate(mGradienterRotateAngleAndValue[0], mMiddlePoint.x, mMiddlePoint.y);
         updateMiddleCircleHalfFillPaint();
         canvas.drawArc(
                 mMiddleCircleLeft, mMiddleCircleTop,
@@ -360,4 +378,9 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
 
     }
 
+    public void setGradienterData(float pitch, float roll) {
+        this.mPitch = pitch;
+        this.mRoll = roll;
+        postInvalidate();
+    }
 }

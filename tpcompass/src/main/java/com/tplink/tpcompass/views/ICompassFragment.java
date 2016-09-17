@@ -12,4 +12,6 @@ public interface ICompassFragment {
     void onUpdateDirectionText(String directionText);
 
     void onRotatePlate(float azimuth);
+
+    void onUpdateGradienter(float pitch, float roll);
 }
