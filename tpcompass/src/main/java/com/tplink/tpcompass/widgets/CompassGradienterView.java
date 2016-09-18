@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.utils.CalculateUtils;
+import com.tplink.tpcompass.utils.LogUtils;
 
 /**
  * Created by Pooholah on 2016/9/15.
@@ -207,8 +208,9 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
 //        mNorthOffsetAngle = 30;
 //        mLevelAngle = 30;//模拟从传感器获取的值
 
-        CalculateUtils.getGradienterRotateAngleAndValue(mPitch, mRoll,
-                mGradienterRotateAngleAndValue);
+        boolean isScreenFacingTheSky = CalculateUtils.getGradienterRotateAngleAndValue
+                (mPitch, mRoll,
+                        mGradienterRotateAngleAndValue);
 
         mLevelAngle = mGradienterRotateAngleAndValue[1];
 
@@ -268,23 +270,61 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
                 mMiddleCircleRight, mMiddleCircleBottom,
                 mPaint);
 
-        canvas.save();
-        //画中间的填充白色半圆
-        canvas.rotate(mGradienterRotateAngleAndValue[0], mMiddlePoint.x, mMiddlePoint.y);
-        updateMiddleCircleHalfFillPaint();
-        canvas.drawArc(
-                mMiddleCircleLeft, mMiddleCircleTop,
-                mMiddleCircleRight, mMiddleCircleBottom,
-                mWhiteStartAngle, mWhiteEndAngle, false,
-                mPaint);
-        //画中间的水平仪椭圆
-        float middleOvalHeight = (float) (Math.cos(Math.toRadians(mLevelAngle)) *
-                mMiddleCircleRadius);
-        updateMiddleOvalPaint();
-        canvas.drawOval(
-                mMiddleCircleLeft, mMiddlePoint.y - middleOvalHeight,
-                mMiddleCircleRight, mMiddlePoint.y + middleOvalHeight, mPaint);
-        canvas.restore();
+        LogUtils.i("mLevelAngle:" + mLevelAngle);
+
+        //画中间
+        if (isScreenFacingTheSky) {
+            if (mLevelAngle != 0) {
+                canvas.save();
+                //画中间的填充白色半圆
+                canvas.rotate(mGradienterRotateAngleAndValue[0], mMiddlePoint.x, mMiddlePoint.y);
+                updateMiddleCircleHalfFillPaint();
+                canvas.drawArc(
+                        mMiddleCircleLeft, mMiddleCircleTop,
+                        mMiddleCircleRight, mMiddleCircleBottom,
+                        mWhiteStartAngle, mWhiteEndAngle, false,
+                        mPaint);
+                //画中间的水平仪椭圆
+                float middleOvalHeight = (float) (Math.cos(Math.toRadians(mLevelAngle)) *
+                        mMiddleCircleRadius);
+                updateMiddleOvalPaint(isScreenFacingTheSky);
+                canvas.drawOval(
+                        mMiddleCircleLeft, mMiddlePoint.y - middleOvalHeight,
+                        mMiddleCircleRight, mMiddlePoint.y + middleOvalHeight, mPaint);
+                canvas.restore();
+            } else {
+                //draw nothing, leave it black
+            }
+        } else {//face the floor
+            if (mLevelAngle != 180) {
+                canvas.save();
+                //画中间的填充白色半圆
+                canvas.rotate(mGradienterRotateAngleAndValue[0], mMiddlePoint.x, mMiddlePoint.y);
+                updateMiddleCircleHalfFillPaint();
+                canvas.drawArc(
+                        mMiddleCircleLeft, mMiddleCircleTop,
+                        mMiddleCircleRight, mMiddleCircleBottom,
+                        mWhiteStartAngle, mWhiteEndAngle, false,
+                        mPaint);
+                //画中间的水平仪椭圆
+                float middleOvalHeight = (float) (Math.cos(Math.toRadians(90 - (180 -
+                        mLevelAngle))) *
+                        mMiddleCircleRadius);
+                updateMiddleOvalPaint(isScreenFacingTheSky);
+                canvas.drawOval(
+                        mMiddleCircleLeft, mMiddlePoint.y - middleOvalHeight,
+                        mMiddleCircleRight, mMiddlePoint.y + middleOvalHeight, mPaint);
+                canvas.restore();
+            } else {
+                //draw fill white circle
+                mPaint.setStyle(Paint.Style.FILL);
+                mPaint.setColor(Color.WHITE);
+                canvas.drawOval(
+                        mMiddleCircleLeft, mMiddleCircleTop,
+                        mMiddleCircleRight, mMiddleCircleBottom,
+                        mPaint);
+            }
+        }
 
         //画固定的竖线
         updateTopFixLinePaint();
@@ -326,8 +366,12 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
         mPaint.setStrokeWidth(mFixLineWidth);
     }
 
-    private void updateMiddleOvalPaint() {
-        mPaint.setColor(mMiddleGradienterOvalColor);
+    private void updateMiddleOvalPaint(boolean isScreenFacingTheSky) {
+        if (isScreenFacingTheSky) {
+            mPaint.setColor(mMiddleGradienterOvalColor);
+        } else {
+            mPaint.setColor(Color.WHITE);
+        }
     }
 
     private void updateMiddleCircleHalfFillPaint() {
