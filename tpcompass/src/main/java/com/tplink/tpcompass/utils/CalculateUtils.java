@@ -32,17 +32,11 @@ public class CalculateUtils {
      */
     public static boolean getGradienterRotateAngleAndValue(float pitch, float roll, float[]
             gradienterRotateAngleAndValue) {
-        LogUtils.i("pitch:" + pitch);
-        LogUtils.i("roll:" + roll);
         int mathRoundPitch = Math.round(pitch);
         int mathRoundRoll = Math.round(roll);
 
         int absMathRoundPitch = Math.abs(mathRoundPitch);
         int absMathRoundRoll = Math.abs(mathRoundRoll);
-
-        if (absMathRoundRoll >= 177 || absMathRoundRoll <= 2) {
-            LogUtils.i("absMathRoundRoll:" + absMathRoundRoll);
-        }
 
         if (absMathRoundRoll <= 90) {
             gradienterRotateAngleAndValue[1] = Math.max(absMathRoundPitch, absMathRoundRoll);
