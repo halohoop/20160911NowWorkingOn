@@ -8,9 +8,10 @@ import android.content.Context;
 
 public interface ICompassActivity extends ICameraScence {
 
-    void onShowCompassFragment();
+    void onShowCompassGradienterFragment();
 
     void onShowGradienterFragment();
 
     Context getContext();
+
 }

@@ -103,10 +103,14 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
 
         mICompassGradienterFragment.onRotatePlate(mAzimuth);
 
-        if (mAzimuth < 50) {
-            mICompassGradienterFragment.onHideCameraScence();
-        } else if (mAzimuth >= 50) {
+        LogUtils.i("mAzimuth:" + mAzimuth);
+        LogUtils.i("mPitch:" + mPitch);
+        LogUtils.i("mRoll:" + mRoll);
+
+        if (Math.abs(mPitch) >= 50) {
             mICompassGradienterFragment.onOpenCameraScence();
+        } else {
+            mICompassGradienterFragment.onHideCameraScence();
         }
 
         mLastAzimuth = mAzimuth;
@@ -240,7 +244,6 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
     public void onLocationChanged(Location location) {
         double longitude = location.getLongitude();
         double altitude = location.getAltitude();
-        LogUtils.i("onLocationChanged:" + altitude + "---" + longitude);
         mICompassGradienterFragment.onUpdateLocation(longitude, altitude);
     }
 

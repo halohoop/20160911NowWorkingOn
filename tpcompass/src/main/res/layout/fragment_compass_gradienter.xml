@@ -7,7 +7,7 @@
         android:id="@+id/cv_compass"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/compass_bg"/>
+        android:background="@android:color/transparent"/>
 
     <TextView
         android:id="@+id/tv_direction_compass"
@@ -16,6 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
+        android:background="@android:color/transparent"
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="25sp"/>
@@ -29,6 +30,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="10dp"
         android:layout_marginTop="33dp"
+        android:background="@android:color/transparent"
         android:drawableRight="@mipmap/triangle_right"
         android:gravity="right"
         android:text="北"
@@ -40,11 +42,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="15dp"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:orientation="horizontal">
 
             <TextView
@@ -52,6 +56,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@android:color/transparent"
                 android:paddingLeft="10dp"
                 android:textColor="@android:color/white"
                 android:visibility="gone"/>
@@ -61,6 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@android:color/transparent"
                 android:paddingLeft="10dp"
                 android:textColor="@android:color/white"
                 android:visibility="gone"/>
@@ -80,6 +86,7 @@
         android:layout_alignBottom="@+id/tv_point_north_right_compass"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="10dp"
+        android:background="@android:color/transparent"
         android:drawableLeft="@mipmap/triangle_left"
         android:gravity="left"
         android:text="北"

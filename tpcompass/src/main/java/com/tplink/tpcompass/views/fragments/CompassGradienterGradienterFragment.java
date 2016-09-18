@@ -69,7 +69,7 @@ public class CompassGradienterGradienterFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
     Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_compass, null, false);
+        View view = inflater.inflate(R.layout.fragment_compass_gradienter, null, false);
         mCvCompass = (CompassGradienterView) view.findViewById(R.id.cv_compass);
         mTvDirectionCompass = (TextView) view.findViewById(R.id.tv_direction_compass);
         mTvPointNorthLeftCompass = (TextView) view.findViewById(R.id.tv_point_north_left_compass);

@@ -22,7 +22,7 @@ public class CompassOnPageChangeListener implements ViewPager.OnPageChangeListen
     @Override
     public void onPageSelected(int position) {
         if (0 == position) {
-            mICompassActivity.onShowCompassFragment();
+            mICompassActivity.onShowCompassGradienterFragment();
         } else if (1 == position) {
             mICompassActivity.onShowGradienterFragment();
         }

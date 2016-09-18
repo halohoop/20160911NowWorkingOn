@@ -15,7 +15,6 @@ import android.view.SurfaceView;
 
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.utils.CalculateUtils;
-import com.tplink.tpcompass.utils.LogUtils;
 
 /**
  * Created by Pooholah on 2016/9/15.
@@ -269,8 +268,6 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
                 mMiddleCircleLeft, mMiddleCircleTop,
                 mMiddleCircleRight, mMiddleCircleBottom,
                 mPaint);
-
-        LogUtils.i("mLevelAngle:" + mLevelAngle);
 
         //画中间
         if (isScreenFacingTheSky) {
