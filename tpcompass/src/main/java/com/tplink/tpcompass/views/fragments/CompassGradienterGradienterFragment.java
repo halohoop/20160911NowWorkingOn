@@ -10,23 +10,22 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.presenters.ISersorPresenter;
 import com.tplink.tpcompass.presenters.ISersorPresenterImpls;
+import com.tplink.tpcompass.utils.CalculateUtils;
 import com.tplink.tpcompass.views.ICompassActivity;
-import com.tplink.tpcompass.views.ICompassFragment;
+import com.tplink.tpcompass.views.ICompassGradienterFragment;
 import com.tplink.tpcompass.widgets.CompassGradienterView;
 
 /**
  * Created by Pooholah on 2016/9/15.
  */
 
-public class CompassGradienterFragment extends Fragment
-        implements SeekBar.OnSeekBarChangeListener,
-        SensorEventListener, ICompassFragment {
+public class CompassGradienterGradienterFragment extends Fragment
+        implements SensorEventListener, ICompassGradienterFragment {
 
     private CompassGradienterView mCvCompass;
     private TextView mTvDirectionCompass;
@@ -56,6 +55,7 @@ public class CompassGradienterFragment extends Fragment
     public void onResume() {
         super.onResume();
         mISersorPresenter.registerSensor(this);
+        mISersorPresenter.updateLocation();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CompassGradienterFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-            Bundle savedInstanceState) {
+    Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compass, null, false);
         mCvCompass = (CompassGradienterView) view.findViewById(R.id.cv_compass);
         mTvDirectionCompass = (TextView) view.findViewById(R.id.tv_direction_compass);
@@ -76,30 +76,7 @@ public class CompassGradienterFragment extends Fragment
         mTvPointNorthRightCompass = (TextView) view.findViewById(R.id.tv_point_north_right_compass);
         mTvNorthLatitude = (TextView) view.findViewById(R.id.tv_north_latitude);
         mTvEastLongitude = (TextView) view.findViewById(R.id.tv_east_longitude);
-        //test
-        SeekBar svRotation = (SeekBar) view.findViewById(R.id.sb_rotation);
-        svRotation.setOnSeekBarChangeListener(this);
-        //test
         return view;
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        switch (seekBar.getId()) {
-            case R.id.sb_rotation:
-                mCvCompass.setNorthOffsetAngle(progress);
-                break;
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override
@@ -145,4 +122,19 @@ public class CompassGradienterFragment extends Fragment
             mICompassActivity.onOpenCameraScence();
         }
     }
+
+    @Override
+    public void onUpdateLocation(double longitude, double altitude) {
+        //TODO deal with data to right format
+        mTvNorthLatitude.setVisibility(View.VISIBLE);
+        mTvEastLongitude.setVisibility(View.VISIBLE);
+
+        String longitudeValue = CalculateUtils.getFormatLongitudeOrAltitudeValue(longitude);
+        String altitudeValue = CalculateUtils.getFormatLongitudeOrAltitudeValue(altitude);
+        String altitudeWord = getResources().getString(R.string.north_latitude);
+        String longitudeWord = getResources().getString(R.string.east_longitude);
+        mTvNorthLatitude.setText(altitudeWord + " " + altitudeValue);
+        mTvEastLongitude.setText(longitudeWord + " " + longitudeValue);
+    }
+
 }

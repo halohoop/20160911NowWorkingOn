@@ -1,22 +1,31 @@
 package com.tplink.tpcompass.presenters;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.utils.CalculateUtils;
-import com.tplink.tpcompass.views.ICompassFragment;
+import com.tplink.tpcompass.utils.LogUtils;
+import com.tplink.tpcompass.views.ICompassGradienterFragment;
 
 /**
  * Created by Pooholah on 2016/9/16.
  */
 
-public class ISersorPresenterImpls implements ISersorPresenter {
+public class ISersorPresenterImpls implements ISersorPresenter, LocationListener {
 
     private float[] mMags;
     private float[] mAccs;
@@ -24,7 +33,7 @@ public class ISersorPresenterImpls implements ISersorPresenter {
     private float[] mRotate;
     private Context mContext;
     private SensorManager mSensorManager;
-    private ICompassFragment mICompassFragment;
+    private ICompassGradienterFragment mICompassGradienterFragment;
     private Sensor mMagsensor;
     private Sensor mAccsensor;
     private float mAzimuth;
@@ -33,15 +42,26 @@ public class ISersorPresenterImpls implements ISersorPresenter {
     private float mLastPitch;
     private float mRoll;
     private float mLastRoll;
+    private final LocationManager mLocationManager;
+    private String mBestProvider;
 
-    public ISersorPresenterImpls(Context context, ICompassFragment iCompassFragment) {
+    public ISersorPresenterImpls(Context context, ICompassGradienterFragment
+            iCompassGradienterFragment) {
         mMags = new float[3];
         mAccs = new float[3];
         mOris = new float[3];
         mRotate = new float[9];
         this.mContext = context;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        this.mICompassFragment = iCompassFragment;
+        this.mICompassGradienterFragment = iCompassGradienterFragment;
+
+        //LocationManager
+        mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    @Override
+    public Context getContext() {
+        return mContext;
     }
 
     @Override
@@ -74,18 +94,19 @@ public class ISersorPresenterImpls implements ISersorPresenter {
         mRoll = CalculateUtils.lowPass(mRoll, mLastRoll);
 
         String directionText = getDirectionText();
-        mICompassFragment.onUpdateDirectionText(directionText + (Math.round(mAzimuth)) + "°");
+        mICompassGradienterFragment.onUpdateDirectionText(directionText + (Math.round(mAzimuth))
+                + "°");
 
-        mICompassFragment.onRotatePlate(mAzimuth);
+        mICompassGradienterFragment.onRotatePlate(mAzimuth);
 
-        mICompassFragment.onUpdateGradienter(mPitch, mRoll);
+        mICompassGradienterFragment.onUpdateGradienter(mPitch, mRoll);
 
-        mICompassFragment.onRotatePlate(mAzimuth);
+        mICompassGradienterFragment.onRotatePlate(mAzimuth);
 
         if (mAzimuth < 50) {
-            mICompassFragment.onHideCameraScence();
+            mICompassGradienterFragment.onHideCameraScence();
         } else if (mAzimuth >= 50) {
-            mICompassFragment.onOpenCameraScence();
+            mICompassGradienterFragment.onOpenCameraScence();
         }
 
         mLastAzimuth = mAzimuth;
@@ -97,7 +118,7 @@ public class ISersorPresenterImpls implements ISersorPresenter {
     @NonNull
     private String getDirectionText() {
         String directionText;
-        Context context = mICompassFragment.getContext();
+        Context context = mICompassGradienterFragment.getContext();
         Resources resources = context.getResources();
         if (mAzimuth >= 0 && mAzimuth <= 22 ||
                 mAzimuth >= 338 && mAzimuth <= 359) {
@@ -142,4 +163,98 @@ public class ISersorPresenterImpls implements ISersorPresenter {
         mSensorManager.unregisterListener(sensorEventListener, mAccsensor);
     }
 
+    @Override
+    public void requestLocationUpdate() {
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        criteria.setAltitudeRequired(true);
+        criteria.setBearingRequired(false);
+        criteria.setSpeedRequired(false);
+        criteria.setCostAllowed(true);
+
+        requestLocation(criteria);
+    }
+
+    private final void requestLocation(Criteria criteria) {
+        if (criteria == null) {
+            throw new IllegalArgumentException("Cannot deal with a criteria");
+        }
+        mBestProvider = mLocationManager.getBestProvider(criteria, true);
+        if (mBestProvider != null) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission
+                    .ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat
+                    .checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            mLocationManager.requestLocationUpdates(mBestProvider, 2000, 1, this);
+        } else {
+            LogUtils.i("mBestProvider is null");
+        }
+    }
+
+    @Override
+    public void requestLocationUpdate(Criteria criteria) {
+        requestLocation(criteria);
+    }
+
+    @Override
+    public void updateLocation() {
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission
+                .ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        if (mBestProvider != null) {
+            Location lastKnownLocation = mLocationManager.getLastKnownLocation(mBestProvider);
+            if (lastKnownLocation != null) {
+                double longitude = lastKnownLocation.getLongitude();
+                double altitude = lastKnownLocation.getAltitude();
+                mICompassGradienterFragment.onUpdateLocation(longitude, altitude);
+            } else {
+                requestLocationUpdate();
+            }
+        } else {
+            requestLocationUpdate();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double longitude = location.getLongitude();
+        double altitude = location.getAltitude();
+        LogUtils.i("onLocationChanged:" + altitude + "---" + longitude);
+        mICompassGradienterFragment.onUpdateLocation(longitude, altitude);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }

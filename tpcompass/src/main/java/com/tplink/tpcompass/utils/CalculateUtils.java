@@ -219,4 +219,15 @@ public class CalculateUtils {
         }
 
     }
+
+    public static String getFormatLongitudeOrAltitudeValue(double value) {
+        int degrees = (int) value;
+        double v1 = value - degrees;
+        double v2 = v1 * 60;
+        int minutes = (int) v2;
+        double v3 = v2 - minutes;
+        double v4 = v3 * 60;
+        int seconds = (int) v4;
+        return " " + degrees + "°" + minutes + "'" + seconds + "\"";
+    }
 }

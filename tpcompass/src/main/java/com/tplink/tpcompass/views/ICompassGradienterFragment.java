@@ -6,7 +6,7 @@ import android.content.Context;
  * Created by Pooholah on 2016/9/15.
  */
 
-public interface ICompassFragment extends ICameraScence{
+public interface ICompassGradienterFragment extends ICameraScence {
     Context getContext();
 
     void onUpdateDirectionText(String directionText);
@@ -14,4 +14,6 @@ public interface ICompassFragment extends ICameraScence{
     void onRotatePlate(float azimuth);
 
     void onUpdateGradienter(float pitch, float roll);
+
+    void onUpdateLocation(double longitude, double altitude);
 }

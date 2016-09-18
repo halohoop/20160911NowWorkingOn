@@ -8,8 +8,11 @@ import android.util.Log;
 
 public class LogUtils {
     private static final String TAG = "huanghaiqi";
+    private static final boolean DEBUG = true;
 
     public static void i(String s) {
-        Log.i(TAG, s);
+        if (DEBUG) {
+            Log.i(TAG, s);
+        }
     }
 }
