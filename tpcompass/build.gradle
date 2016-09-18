@@ -1,24 +1,9 @@
 apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-
-    defaultConfig {
-        applicationId "com.tplink.tpcompass"
-        minSdkVersion 22
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+repositories {
+    //jar.aar包放到libs目录
+    flatDir {
+        dirs 'libs'
     }
 }
 
@@ -29,4 +14,143 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.0'
     testCompile 'junit:junit:4.12'
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.tplink.tpcompass"
+        minSdkVersion 21
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    //指定java版本1.7
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    //指定资源目录
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/res']
+            aidl.srcDirs = ['src/main/aidl']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['src/main/assets']
+        }
+
+        instrumentTest.setRoot('tests')
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    //签名
+    signingConfigs {
+        release {
+        }
+    }
+
+    //读取keystore文件
+    File propFile = file('signing.properties');
+    if (propFile.exists()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(propFile))
+        if (props.containsKey('key.store') && props.containsKey('key.store.password') &&
+                props.containsKey('key.alias') && props.containsKey('key.alias.password')) {
+            android.signingConfigs.release.storeFile = file(props['key.store'])
+            android.signingConfigs.release.storePassword = props['key.store.password']
+            android.signingConfigs.release.keyAlias = props['key.alias']
+            android.signingConfigs.release.keyPassword = props['key.alias.password']
+        } else {
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+
+    buildTypes {
+        debug {
+            // 显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            //不去除无用代码
+            minifyEnabled false
+            //不进行对齐
+            zipAlignEnabled false
+            //不去除无用资源
+            shrinkResources false
+        }
+
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            // 去除无用代码
+            minifyEnabled true
+            // 进行对齐
+            zipAlignEnabled true
+            // 移除无用的资源
+            shrinkResources true
+            // 配置混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // 配置签名
+            signingConfig signingConfigs.release
+        }
+    }
+    productFlavors {
+
+        alldpi {
+            // 所有资源
+        }
+        hdpi {
+            //只保留hdpi资源
+            resConfigs "hdpi"
+        }
+        xhdpi {
+            //只保留xhdpi资源
+            resConfigs "xhdpi"
+        }
+        xxhdpi {
+            //只保留xxhdpi资源
+            resConfigs "xxhdpi"
+        }
+    }
+
+    // debug包不需要按分辨率打包
+    variantFilter { variant ->
+        if (variant.buildType.name.equals('debug')) {
+            variant.getFlavors().each() { flavor ->
+                variant.setIgnore(!flavor.name.equals('alldpi'));
+            }
+        }
+    }
+
+    //去除经过zip对齐但是没有签名的产物
+    applicationVariants.all { variant ->
+        variant.assemble.doLast {
+            variant.outputs.each { output ->
+                println "aligned " + output.outputFile
+                println "unaligned " + output.packageApplication.outputFile
+
+                File file = output.packageApplication.outputFile;
+                if (variant.buildType.zipAlignEnabled && file.getName().contains("unaligned")) {
+                    println "deleting " + file.getName()
+                    file.delete()
+                }
+            }
+        }
+    }
+
+    lintOptions {
+        //忽略lint error
+        abortOnError false
+    }
 }

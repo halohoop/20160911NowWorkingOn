@@ -1,8 +1,11 @@
+# To enable ProGuard in your project, edit project.properties
+# to define the proguard.config property as described in that file.
+#
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in F:\android-sdk_r20-windows\android-sdk_r20-windows/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
+# in ${sdk.dir}/tools/proguard/proguard-android.txt
+# You can edit the include path and order by changing the ProGuard
+# include property in project.properties.
 #
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
@@ -15,7 +18,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
 -keep public class com.android.vcard.* { *; }
 
 -dontwarn android.support.v7.**
@@ -29,11 +31,13 @@
 -keep class android.support.design.* { *; }
 -keep class android.support.design.*.* { *; }
 
+#-libraryjars libs/greendao-2.1.0.jar
 -keep class de.greenrobot.dao.** {*;}
 -keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
     public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
+
 -keepclassmembers class **.R$* {
     public static <fields>;
 }

@@ -2,7 +2,9 @@
 
 buildscript {
     repositories {
-        jcenter()
+        //jcenter() 服务器无法链接到jcenter 故使用本地maven仓库来解决gradle-android-plugin插件的依赖
+        //将maven缓存文件夹.m2解压到系统根目录,在此处添加maveLocal()即可
+        mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.3'

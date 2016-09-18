@@ -80,8 +80,8 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
         /*
             oris[0]      :mAzimuth 方向角，但用（磁场+加速度）得到的数据范围是（-180～180）,
                 也就是说，0表示正北，90表示正东，180/-180表示正南，-90表示正西。
-            oris[1]      :pitch 倾斜角  即由静止状态开始，围绕X轴前后翻转
-            oris[2]      :roll 旋转角 即由静止状态开始，围绕Y轴左右翻转
+            oris[1]      :pitch 倾斜角  即由静止状态开始，围绕X轴前后翻转 0-90 90-0
+            oris[2]      :roll 旋转角 即由静止状态开始，围绕Y轴左右翻转 -180-0-180
         */
         mAzimuth = (float) Math.toDegrees(mOris[0]);
         mPitch = (float) Math.toDegrees(mOris[1]);
@@ -196,6 +196,7 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
                 return;
             }
             mLocationManager.requestLocationUpdates(mBestProvider, 2000, 1, this);
+            mLocationManager.removeUpdates(this);
         } else {
             LogUtils.i("mBestProvider is null");
         }
