@@ -7,7 +7,6 @@ import android.view.SurfaceView;
 
 public class CameraSurfaceView extends SurfaceView
         implements SurfaceHolder.Callback {
-    private static final String TAG = "COMPASS_APP_" + CameraSurfaceView.class.getSimpleName();
     private SurfaceHolder mHolder = getHolder();
 
     public CameraSurfaceView(Context paramContext, AttributeSet paramAttributeSet) {
