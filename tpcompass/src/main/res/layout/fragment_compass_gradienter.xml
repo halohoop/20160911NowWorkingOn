@@ -4,11 +4,11 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent">
 
-    <com.tplink.tpcompass.widgets.CompassGradienterView
+    <com.tplink.tpcompass.widgets.CompassGradienterView2
         android:id="@+id/cv_compass"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"/>
+        android:background="@android:color/transparent"/>
 
     <TextView
         android:id="@+id/tv_direction_compass"

@@ -18,7 +18,7 @@ import com.tplink.tpcompass.presenters.ISersorPresenterImpls;
 import com.tplink.tpcompass.utils.CalculateUtils;
 import com.tplink.tpcompass.views.ICompassActivity;
 import com.tplink.tpcompass.views.ICompassGradienterFragment;
-import com.tplink.tpcompass.widgets.CompassGradienterView;
+import com.tplink.tpcompass.widgets.CompassGradienterView2;
 
 /**
  * Created by Pooholah on 2016/9/15.
@@ -27,7 +27,7 @@ import com.tplink.tpcompass.widgets.CompassGradienterView;
 public class CompassGradienterGradienterFragment extends Fragment
         implements SensorEventListener, ICompassGradienterFragment {
 
-    private CompassGradienterView mCvCompass;
+    private CompassGradienterView2 mCvCompass;
     private TextView mTvDirectionCompass;
     private TextView mTvPointNorthLeftCompass;
     private TextView mTvPointNorthRightCompass;
@@ -70,7 +70,7 @@ public class CompassGradienterGradienterFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
     Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compass_gradienter, null, false);
-        mCvCompass = (CompassGradienterView) view.findViewById(R.id.cv_compass);
+        mCvCompass = (CompassGradienterView2) view.findViewById(R.id.cv_compass);
         mTvDirectionCompass = (TextView) view.findViewById(R.id.tv_direction_compass);
         mTvPointNorthLeftCompass = (TextView) view.findViewById(R.id.tv_point_north_left_compass);
         mTvPointNorthRightCompass = (TextView) view.findViewById(R.id.tv_point_north_right_compass);

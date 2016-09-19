@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tplink.tpcompass.widgets.GradienterView
+    <com.tplink.tpcompass.widgets.GradienterView2
         android:id="@+id/gv_compass"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/compass_bg" />
+        android:background="@android:color/transparent"/>
 
 
 </RelativeLayout>
