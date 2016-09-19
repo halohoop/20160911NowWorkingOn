@@ -201,7 +201,7 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+//        super.onDraw(canvas);
 
         //模拟从传感器获取的值
 //        mNorthOffsetAngle = 30;

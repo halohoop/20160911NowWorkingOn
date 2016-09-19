@@ -1,7 +1,6 @@
 package com.tplink.tpcompass.views.activities;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -76,7 +75,6 @@ public class CompassActivity extends AppCompatActivity
             LogUtils.i(" huanghaiqi onHideCameraScence");
             mShowSurfaceView = false;
             //TODO replace with animation to hide
-            mVpMain.setBackgroundColor(Color.BLACK);
         }
     }
 
@@ -86,7 +84,6 @@ public class CompassActivity extends AppCompatActivity
             LogUtils.i("huanghaiqi onOpenCameraScence");
             mShowSurfaceView = true;
             //TODO replace with animation to show
-            mVpMain.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
