@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mPreviewView = (TextureView) findViewById(R.id.textureview);
-        mThreadHandler = new HandlerThread("CAMERA2");
-        mThreadHandler.start();
-        mHandler = new Handler(mThreadHandler.getLooper());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED) {
 
@@ -49,8 +46,6 @@ public class MainActivity extends AppCompatActivity
                     new String[]{Manifest.permission.CAMERA}, 101);
             return;
         }
-
-        mPreviewView.setSurfaceTextureListener(this);
     }
 
     public void btn(View v) {
@@ -61,6 +56,10 @@ public class MainActivity extends AppCompatActivity
                     new String[]{Manifest.permission.CAMERA}, 101);
             return;
         }
+        mThreadHandler = new HandlerThread("CAMERA2");
+        mThreadHandler.start();
+        mHandler = new Handler(mThreadHandler.getLooper());
+
         mPreviewView.setSurfaceTextureListener(this);
     }
 
