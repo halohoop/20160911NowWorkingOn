@@ -15,12 +15,14 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.Arrays;
 
@@ -42,33 +44,39 @@ public class MainActivity extends AppCompatActivity
         mHandler = new Handler(mThreadHandler.getLooper());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, 101);
             return;
         }
 
+        mPreviewView.setSurfaceTextureListener(this);
     }
 
     public void btn(View v) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, 101);
             return;
         }
         mPreviewView.setSurfaceTextureListener(this);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 101:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "yes", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "no", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
 
     //TextureView-----------------
     @Override
@@ -84,13 +92,9 @@ public class MainActivity extends AppCompatActivity
             //就像这样
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
                     PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA}, 101);
                 return;
             }
             cameraManager.openCamera(CameraIdList[0], mStateCallback, mHandler);
