@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tplink.tpcompass.R;
-import com.tplink.tpcompass.widgets.GradienterView2;
 
 /**
  * Created by Pooholah on 2016/9/15.

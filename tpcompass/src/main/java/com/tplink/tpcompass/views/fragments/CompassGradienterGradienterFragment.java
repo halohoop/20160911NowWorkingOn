@@ -18,7 +18,6 @@ import com.tplink.tpcompass.presenters.ISersorPresenterImpls;
 import com.tplink.tpcompass.utils.CalculateUtils;
 import com.tplink.tpcompass.views.ICompassActivity;
 import com.tplink.tpcompass.views.ICompassGradienterFragment;
-import com.tplink.tpcompass.widgets.CompassGradienterView2;
 
 /**
  * Created by Pooholah on 2016/9/15.

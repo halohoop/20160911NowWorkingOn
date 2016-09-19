@@ -1,1 +1,1 @@
-include ':ScreenShotExtractFromSourceDemo', ':FloatAnimationDemo', ':MarkableImageView-lib', ':MarkableImageView-Sample', ':mergebitmap', ':matrixdemo', ':drawbitmapdemo', ':scrollimageviewdemo', ':tpcompass', ':getallsensor'
+include ':ScreenShotExtractFromSourceDemo', ':FloatAnimationDemo', ':MarkableImageView-lib', ':MarkableImageView-Sample', ':mergebitmap', ':matrixdemo', ':drawbitmapdemo', ':scrollimageviewdemo', ':tpcompass', ':getallsensor', ':camera2demo'

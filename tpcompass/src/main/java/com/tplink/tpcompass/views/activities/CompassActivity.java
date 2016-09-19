@@ -45,6 +45,12 @@ public class CompassActivity extends AppCompatActivity
         mICompassActivityPresenter = new ICompassActivityPresenterImpls(this);
 
         mVpMain = (ViewPager) findViewById(R.id.vp_main);
+        findViewById(R.id.tv_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOpenCameraScence();
+            }
+        });
         mFlCameraContainer = (FrameLayout) findViewById(R.id.fl_camera_container);
 
         mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
