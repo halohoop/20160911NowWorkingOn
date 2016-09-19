@@ -21,6 +21,10 @@ public class CalculateUtils {
         return last * (1.0f - ALPHA) + current * ALPHA;
     }
 
+    public static float normalizeDegree(float paramFloat) {
+        return (720.0F + paramFloat) % 360.0F;
+    }
+
     /**
      * 根据两个值计算出水平仪的旋转角度
      *

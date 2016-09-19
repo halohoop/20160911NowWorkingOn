@@ -100,7 +100,8 @@ public class CompassGradienterView2 extends View {
 
     private void init(Context context, AttributeSet attrs) {
         initPaint();
-        mMiddleGradienterOvalColor = Color.parseColor("#FF181818");
+//        mMiddleGradienterOvalColor = Color.parseColor("#FF181818");
+        mMiddleGradienterOvalColor = Color.parseColor("#FF8e8e8e");
 
         /**
          * 表盘有12个词，得到画布每次需要旋转的角度

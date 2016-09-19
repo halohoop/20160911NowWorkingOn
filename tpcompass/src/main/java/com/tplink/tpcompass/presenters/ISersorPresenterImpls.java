@@ -89,9 +89,12 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
         if (mAzimuth < 0) {
             mAzimuth = 360 + mAzimuth;
         }
-        mAzimuth = CalculateUtils.lowPass(mAzimuth, mLastAzimuth);
-        mPitch = CalculateUtils.lowPass(mPitch, mLastPitch);
-        mRoll = CalculateUtils.lowPass(mRoll, mLastRoll);
+
+
+        mAzimuth = CalculateUtils.normalizeDegree(mAzimuth);
+//        mAzimuth = CalculateUtils.lowPass(mAzimuth, mLastAzimuth);
+//        mPitch = CalculateUtils.lowPass(mPitch, mLastPitch);
+//        mRoll = CalculateUtils.lowPass(mRoll, mLastRoll);
 
         String directionText = getDirectionText();
         mICompassGradienterFragment.onUpdateDirectionText(directionText + (Math.round(mAzimuth))
@@ -121,9 +124,9 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
 
     @NonNull
     private String getDirectionText() {
-        String directionText;
         Context context = mICompassGradienterFragment.getContext();
         Resources resources = context.getResources();
+        String directionText = resources.getString(R.string.north);
         if (mAzimuth >= 0 && mAzimuth <= 22 ||
                 mAzimuth >= 338 && mAzimuth <= 359) {
             directionText = resources.getString(R.string.north);
@@ -139,7 +142,7 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
             directionText = resources.getString(R.string.southwest);
         } else if (mAzimuth >= 248 && mAzimuth <= 292) {
             directionText = resources.getString(R.string.west);
-        } else {
+        } else if (mAzimuth <= 337 && mAzimuth >= 293) {
             directionText = resources.getString(R.string.northwest);
         }
         return directionText;
@@ -201,7 +204,7 @@ public class ISersorPresenterImpls implements ISersorPresenter, LocationListener
             }
             mLocationManager.requestLocationUpdates(mBestProvider, 2000, 1, this);
         } else {
-            LogUtils.i("mBestProvider is null");
+//            LogUtils.i("mBestProvider is null");
         }
     }
 
