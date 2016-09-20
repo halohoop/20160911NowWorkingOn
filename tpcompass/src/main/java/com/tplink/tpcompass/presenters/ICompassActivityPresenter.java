@@ -1,11 +1,16 @@
-package com.tplink.tpcompass.presenters;
-
-import android.content.Context;
-
-/**
- * Created by Pooholah on 2016/9/17.
+/*
+ * Copyright (C) 2016, TP-LINK TECHNOLOGIES CO., LTD.
+ *
+ * ICompassActivityPresenter.java
+ *
+ * To get
+ *
+ * Author huanghaiqi, Created at 2016-09-20
+ *
+ * Ver 1.0, 2016-09-20, huanghaiqi, Create file.
  */
 
-public interface ICompassActivityPresenter {
-    Context getContext();
+package com.tplink.tpcompass.presenters;
+
+public class ICompassActivityPresenter {
 }
