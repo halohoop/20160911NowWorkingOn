@@ -10,8 +10,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.View;
 
 import com.tplink.tpcompass.R;
 import com.tplink.tpcompass.utils.CalculateUtils;
@@ -20,7 +19,7 @@ import com.tplink.tpcompass.utils.CalculateUtils;
  * Created by Pooholah on 2016/9/15.
  */
 
-public class CompassGradienterView extends SurfaceView implements SurfaceHolder.Callback {
+public class CompassGradienterView extends View {
 
     private Paint mPaint;
     private int mWidth;
@@ -100,7 +99,6 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
     }
 
     private void init(Context context, AttributeSet attrs) {
-        getHolder().addCallback(this);
         initPaint();
         mMiddleGradienterOvalColor = Color.parseColor("#FF181818");
 
@@ -399,24 +397,6 @@ public class CompassGradienterView extends SurfaceView implements SurfaceHolder.
         tmpWordPpintX = tmpWordPpintX - mEveryWordRect.width() / 2;
         tmpWordPpintY = tmpWordPpintY + mEveryWordRect.height() / 2;
         canvas.drawText(text, tmpWordPpintX, tmpWordPpintY, mPaint);
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        //surfaceview templete
-        Canvas canvas = surfaceHolder.lockCanvas();
-        draw(canvas);//final to onDraw
-        surfaceHolder.unlockCanvasAndPost(canvas);
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
     }
 
     public void setGradienterData(float pitch, float roll) {

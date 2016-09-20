@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tplink.tpcompass.R;
+import com.tplink.tpcompass.widgets.GradienterView;
 
 /**
  * Created by Pooholah on 2016/9/15.
@@ -15,13 +16,13 @@ import com.tplink.tpcompass.R;
 
 public class GradienterFragment extends Fragment {
 
-    private GradienterView2 mGvCompass;
+    private GradienterView mGvCompass;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gradient, null, false);
-        mGvCompass = (GradienterView2) view.findViewById(R.id.gv_compass);
+        mGvCompass = (GradienterView) view.findViewById(R.id.gv_compass);
         return view;
     }
 }

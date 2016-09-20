@@ -8,14 +8,13 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.View;
 
 /**
  * Created by Pooholah on 2016/9/15.
  */
 
-public class GradienterView extends SurfaceView implements SurfaceHolder.Callback {
+public class GradienterView extends View {
 
     private Paint mPaint;
     private int mWidth;
@@ -67,7 +66,6 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void init(Context context, AttributeSet attrs) {
-        getHolder().addCallback(this);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(Color.RED);
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
@@ -165,24 +163,6 @@ public class GradienterView extends SurfaceView implements SurfaceHolder.Callbac
                 halfTextHeight, mPaint);
         canvas.restore();
         mPaint.setTypeface(mNormalTypeface);
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        //surfaceview templete
-        Canvas canvas = surfaceHolder.lockCanvas();
-        draw(canvas);//final to onDraw
-        surfaceHolder.unlockCanvasAndPost(canvas);
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
     }
 
 }
