@@ -12,5 +12,15 @@
 
 package com.tplink.tpcompass.utils;
 
+import android.util.Log;
+
 public class LogUtils {
+    private static final String TAG = "huanghaiqi";
+    private static final boolean DEBUG = true;
+
+    public static void i(String s) {
+        if (DEBUG) {
+            Log.i(TAG, s);
+        }
+    }
 }

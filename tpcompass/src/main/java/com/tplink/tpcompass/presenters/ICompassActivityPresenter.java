@@ -3,7 +3,7 @@
  *
  * ICompassActivityPresenter.java
  *
- * To get
+ * The CompassActivity's view interface
  *
  * Author huanghaiqi, Created at 2016-09-20
  *
@@ -12,5 +12,8 @@
 
 package com.tplink.tpcompass.presenters;
 
-public class ICompassActivityPresenter {
+import android.content.Context;
+
+public interface ICompassActivityPresenter {
+    Context getContext();
 }

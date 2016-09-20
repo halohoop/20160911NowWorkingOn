@@ -12,5 +12,16 @@
 
 package com.tplink.tpcompass.views;
 
-public interface ICompassGradienterFragment {
+import android.content.Context;
+
+public interface ICompassGradienterFragment extends ICameraScence {
+    Context getContext();
+
+    void onUpdateDirectionText(String directionText);
+
+    void onRotatePlate(float azimuth);
+
+    void onUpdateGradienter(float pitch, float roll);
+
+    void onUpdateLocation(double longitude, double altitude);
 }

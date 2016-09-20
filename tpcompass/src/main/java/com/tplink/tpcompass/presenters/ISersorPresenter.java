@@ -12,8 +12,24 @@
 
 package com.tplink.tpcompass.presenters;
 
-/**
- * Created by halohoop on 16-9-20.
- */
+import android.content.Context;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.location.Criteria;
+
 public interface ISersorPresenter {
+
+    Context getContext();
+
+    void handleSensorEvent(SensorEvent event);
+
+    void registerSensor(SensorEventListener sensorEventListener);
+
+    void unregisterSensor(SensorEventListener sensorEventListener);
+
+    void requestLocationUpdate();
+
+    void requestLocationUpdate(Criteria criteria);
+
+    void updateLocation();
 }

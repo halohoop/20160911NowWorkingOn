@@ -12,5 +12,14 @@
 
 package com.tplink.tpcompass.views;
 
-public interface ICompassActivity {
+import android.content.Context;
+
+public interface ICompassActivity extends ICameraScence {
+
+    void onShowCompassGradienterFragment();
+
+    void onShowGradienterFragment();
+
+    Context getContext();
+
 }

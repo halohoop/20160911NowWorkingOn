@@ -3,7 +3,7 @@
  *
  * ICompassActivityPresenterImpls.java
  *
- * Implements of 
+ * Implements of ICompassActivityPresenter
  *
  * Author huanghaiqi, Created at 2016-09-20
  *
@@ -12,5 +12,20 @@
 
 package com.tplink.tpcompass.presenters;
 
-public class ICompassActivityPresenterImpls {
+import android.content.Context;
+
+import com.tplink.tpcompass.views.ICompassActivity;
+
+public class ICompassActivityPresenterImpls implements ICompassActivityPresenter {
+    private ICompassActivity mICompassActivity;
+
+    public ICompassActivityPresenterImpls(ICompassActivity iCompassActivity) {
+        this.mICompassActivity = iCompassActivity;
+    }
+
+    @Override
+    public Context getContext() {
+        return mICompassActivity.getContext();
+    }
+
 }
