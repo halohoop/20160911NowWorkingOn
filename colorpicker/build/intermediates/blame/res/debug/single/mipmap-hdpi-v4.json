@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/build/intermediates/res/merged/debug/mipmap-hdpi-v4/tick.png",
+        "source": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/src/main/res/mipmap-hdpi/tick.png"
+    },
+    {
+        "merged": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/build/intermediates/res/merged/debug/mipmap-hdpi-v4/resize_arrow.png",
+        "source": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/src/main/res/mipmap-hdpi/resize_arrow.png"
+    },
+    {
+        "merged": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/build/intermediates/res/merged/debug/mipmap-hdpi-v4/ic_launcher.png",
+        "source": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/build/intermediates/res/merged/debug/mipmap-hdpi-v4/cancel_x.png",
+        "source": "/home/halohoop/workspaces/AndroidStudio/201600906/MyApplication/colorpicker/src/main/res/mipmap-hdpi/cancel_x.png"
+    }
+]
